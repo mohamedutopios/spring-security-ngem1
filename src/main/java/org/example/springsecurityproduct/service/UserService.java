@@ -34,6 +34,21 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + email));
     }
 
+
+    public boolean verifyUser(String email, String password){
+        return userRepository
+                .findByEmail(email)
+                .map(user -> passwordEncoder
+                        .matches(password, user.getPassword()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + email));
+    }
+    public boolean checkUserExist(String email){
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+
+
+
     public boolean createUser(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
