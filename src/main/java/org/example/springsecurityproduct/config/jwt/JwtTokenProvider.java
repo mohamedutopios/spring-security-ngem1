@@ -1,8 +1,10 @@
 package org.example.springsecurityproduct.config.jwt;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,6 @@ public class JwtTokenProvider {
         byte[] keyBytes = Base64.getDecoder().decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
 
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
@@ -49,5 +50,26 @@ public class JwtTokenProvider {
     }
 
 
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigninKey())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        }catch (Exception e){
+            throw  new AuthenticationCredentialsNotFoundException("Jwt not good");
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+            return claims.getSubject();
+    }
 
 }
