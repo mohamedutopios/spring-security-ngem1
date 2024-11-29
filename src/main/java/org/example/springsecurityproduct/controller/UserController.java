@@ -36,16 +36,15 @@ public class UserController {
 
         if(userService.checkUserExist(userLoginDto.getEmail())){
             if(userService.verifyUser(userLoginDto.getEmail(), userLoginDto.getPassword())){
-
                 Map<String, Object>data = new HashMap<>();
-
-                //data.put("token",);
-
+                data.put("token",userService.generateToken(userLoginDto.getEmail(), userLoginDto.getPassword()));
+                return new BaseResponseDto("Success",data);
+            }else{
+                return new BaseResponseDto("wrong password");
             }
+        }else{
+            return new BaseResponseDto("user not exist");
         }
-
-
-
     }
 
 
