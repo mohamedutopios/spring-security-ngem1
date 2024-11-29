@@ -34,7 +34,6 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + email));
     }
 
-
     public boolean verifyUser(String email, String password){
         return userRepository
                 .findByEmail(email)
@@ -45,8 +44,6 @@ public class UserService implements UserDetailsService {
     public boolean checkUserExist(String email){
         return userRepository.findByEmail(email).isPresent();
     }
-
-
 
 
     public boolean createUser(User user){
